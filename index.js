@@ -66,35 +66,37 @@ const run = async () => {
   Object.entries(nodesData).forEach(([key, value]) => {
     if (value.baseRefName === undefined) return;
 
+    const headLabel = `${value.title}\n${value.headRefName}\n${value.author.login}`;
     value.node = createNodeIfNotExist(
       value.headRefName,
       {
-        label: `${value.title}\n${value.author.login}`,
+        label: headLabel,
         URL: value.url,
         fillcolor: STATUS_BG[value.mergeable]
       }
     );
-    value.node.set( "style", "filled" );
+    value.node.set("style", "filled");
+
+    const baseLabel = `${nodesData[value.baseRefName].title}\n${nodesData[value.baseRefName].author?.login || ''}`
 
     nodesData[value.baseRefName].node = createNodeIfNotExist(
       value.baseRefName,
       {
-        label: `${nodesData[value.baseRefName].title}\n${nodesData[value.baseRefName].author?.login || ''}`,
+        label: baseLabel,
         URL: nodesData[value.baseRefName].url,
         fillcolor: STATUS_BG[nodesData[value.baseRefName].mergeable]
       }
     );
-    g.addEdge(
-      value.baseRefName,
-      value.headRefName,
-    );
+
+    const edge = [value.baseRefName, value.headRefName];
+    g.addEdge.apply(g, process.env.UP_DOWN === 'true' ? edge : edge.reverse());
   })
 
   if (process.env.SHOW_DOT === 'true') {
     console.log(g.to_dot());
   }
 
-  g.output("svg", `${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.svg`);
+  g.output("svg", `graphs/${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.svg`);
 }
 
 run().then(() => console.log('Processed'));
