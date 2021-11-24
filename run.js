@@ -48,6 +48,12 @@ const filterNode = (node) => {
   return !testValidation.test(node.headRefName)
 }
 
+const maxCharsLine = (string, chars = 35) => {
+  const wsLookup = 15; // Look backwards n characters for a whitespace
+  const regex = new RegExp(String.raw`\s*(?:(\S{${chars}})|([\s\S]{${chars - wsLookup},${chars}})(?!\S))`, 'g');
+  return string.replace(regex, (_, x, y) => x ? `${x}-\n` : `${y}\n`)
+}
+
 const run = async () => {
   let nodes = await getPRNodes({ owner: process.env.GH_OWNER, repo: process.env.GH_REPO });
 
@@ -60,35 +66,40 @@ const run = async () => {
           headRefName: node.baseRefName,
           title: node.baseRefName
           // baseRefName: ((node.baseRefName !== mainBranch) && mainBranch) || undefined
-        }
+        };
+
+      let edge = [node.baseRefName, node.headRefName];
+      if (process.env.UP_DOWN === 'true') {
+        edge = edge.reverse()
+      } else {
+        edge.push({ dir: 'back' })
+      }
+      g.addEdge.apply(g, edge);
     });
 
   Object.entries(nodesData).forEach(([key, value]) => {
     if (value.baseRefName === undefined) return;
 
-    const headLabel = `${value.title}\n${value.author.login}`;
+    const headLabel = `${value.title} <${value.author.login}>`;
     value.node = createNodeIfNotExist(
       value.headRefName,
       {
-        label: headLabel,
+        label: maxCharsLine(headLabel),
         URL: value.url,
         fillcolor: STATUS_BG[value.mergeable]
       }
     );
     value.node.set("style", "filled");
 
-    const baseLabel = `${nodesData[value.baseRefName].title}\n${nodesData[value.baseRefName].author?.login || ''}`
+    const baseLabel = `${nodesData[value.baseRefName].title} <${nodesData[value.baseRefName].author?.login || ''}>`
     nodesData[value.baseRefName].node = createNodeIfNotExist(
       value.baseRefName,
       {
-        label: baseLabel,
+        label: maxCharsLine(baseLabel),
         URL: nodesData[value.baseRefName].url,
         fillcolor: STATUS_BG[nodesData[value.baseRefName].mergeable]
       }
     );
-
-    const edge = [value.baseRefName, value.headRefName];
-    g.addEdge.apply(g, process.env.UP_DOWN === 'true' ? edge : edge.reverse());
   })
 
   if (process.env.SHOW_DOT === 'true') {
