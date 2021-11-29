@@ -44,7 +44,17 @@ const createNodeIfNotExist = (id, attr = {}) => (
 
 const testValidation = new RegExp('^dependabot*');
 
+let banned = [
+//  Add here those PR that you don't want to see in the graph
+]
+
 const filterNode = (node) => {
+  // Some Clean up
+  if(banned.includes(node.url)){
+    banned = banned.filter(item => item !== node.url)
+    return false;
+  }
+
   return !testValidation.test(node.headRefName)
 }
 
@@ -105,7 +115,9 @@ const run = async () => {
   if (process.env.SHOW_DOT === 'true') {
     console.log(g.to_dot());
   }
-
+  if(banned.length){
+    console.log(banned, ' banned already removed')
+  }
   g.output("svg", `graphs/${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.svg`);
 }
 
