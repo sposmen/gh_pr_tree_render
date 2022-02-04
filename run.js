@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const result = dotenv.config()
+const repos = require('./repos')
 if (result.error) throw result.error;
 
 const graphviz = require('graphviz');
@@ -34,19 +35,15 @@ const getPRNodes = async ({ owner, repo }) => {
   return result.repository.pullRequests.nodes;
 }
 
-let nodesData = {};
-
-const g = graphviz.digraph("G");
+let g;
+let nodesData;
+let banned = []
 
 const createNodeIfNotExist = (id, attr = {}) => (
   nodesData[id].node || g.addNode(id, Object.assign({}, attr))
 );
 
 const testValidation = new RegExp('^dependabot*');
-
-let banned = [
-//  Add here those PR that you don't want to see in the graph
-]
 
 const filterNode = (node) => {
   // Some Clean up
@@ -64,8 +61,12 @@ const maxCharsLine = (string, chars = 35) => {
   return string.replace(regex, (_, x, y) => x ? `${x}-\n` : `${y}\n`)
 }
 
-const run = async () => {
-  let nodes = await getPRNodes({ owner: process.env.GH_OWNER, repo: process.env.GH_REPO });
+const run = async (repo, ignored) => {
+  let nodes = await getPRNodes({ owner: process.env.GH_OWNER, repo });
+
+  g = graphviz.digraph("G");
+  banned = ignored;
+  nodesData = {}
 
   nodes
     .filter(filterNode)
@@ -118,7 +119,9 @@ const run = async () => {
   if(banned.length){
     console.log(banned, ' banned already removed')
   }
-  g.output("svg", `graphs/${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.svg`);
+  g.output("svg", `graphs/${process.env.GH_OWNER}.${repo}.pr_tree.svg`);
 }
 
-run().then(() => console.log('Processed'));
+Object.entries(repos).forEach(([repo, {ignored}])=>{
+  run(repo, ignored).then(() => console.log(`Processed ${repo}`));
+})
