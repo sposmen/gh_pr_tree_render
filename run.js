@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const result = dotenv.config()
+const repositories = require('./repositories')
 if (result.error) throw result.error;
 
 const graphviz = require('graphviz');
@@ -34,9 +35,9 @@ const getPRNodes = async ({ owner, repo }) => {
   return result.repository.pullRequests.nodes;
 }
 
-let nodesData = {};
-
-const g = graphviz.digraph("G");
+let g;
+let nodesData;
+let banned = []
 
 const createNodeIfNotExist = (id, attr = {}) => (
   nodesData[id].node || g.addNode(id, Object.assign({}, attr))
@@ -44,13 +45,9 @@ const createNodeIfNotExist = (id, attr = {}) => (
 
 const testValidation = new RegExp('^dependabot*');
 
-let banned = [
-//  Add here those PR that you don't want to see in the graph
-]
-
 const filterNode = (node) => {
   // Some Clean up
-  if(banned.includes(node.url)){
+  if (banned.includes(node.url)) {
     banned = banned.filter(item => item !== node.url)
     return false;
   }
@@ -64,8 +61,12 @@ const maxCharsLine = (string, chars = 35) => {
   return string.replace(regex, (_, x, y) => x ? `${x}-\n` : `${y}\n`)
 }
 
-const run = async () => {
-  let nodes = await getPRNodes({ owner: process.env.GH_OWNER, repo: process.env.GH_REPO });
+const run = async ({ owner, repo, ignored }) => {
+  let nodes = await getPRNodes({ owner, repo });
+
+  g = graphviz.digraph("G");
+  banned = ignored;
+  nodesData = {}
 
   nodes
     .filter(filterNode)
@@ -115,10 +116,14 @@ const run = async () => {
   if (process.env.SHOW_DOT === 'true') {
     console.log(g.to_dot());
   }
-  if(banned.length){
+  if (banned.length) {
     console.log(banned, ' banned already removed')
   }
-  g.output("svg", `graphs/${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.svg`);
+  g.output("svg", `graphs/${owner}.${repo}.pr_tree.svg`);
 }
 
-run().then(() => console.log('Processed'));
+Object.entries(repositories).forEach(([owner, repos]) => {
+  Object.entries(repos).forEach(([repo, { ignored }]) => {
+    run({ owner, repo, ignored }).then(() => console.log(`Processed ${repo}`));
+  })
+})
