@@ -92,7 +92,7 @@ const run = async ({ owner, repo, ignored }) => {
   Object.entries(nodesData).forEach(([key, value]) => {
     if (value.baseRefName === undefined) return;
 
-    const headLabel = `${value.title} <${value.author.login}>`;
+    const headLabel = `${value.title.replace(/"/g, "\\\"")} <${value.author.login}>`;
     value.node = createNodeIfNotExist(
       value.headRefName,
       {
@@ -103,7 +103,7 @@ const run = async ({ owner, repo, ignored }) => {
     );
     value.node.set("style", "filled");
 
-    const baseLabel = `${nodesData[value.baseRefName].title} <${nodesData[value.baseRefName].author?.login || ''}>`
+    const baseLabel = `${nodesData[value.baseRefName].title.replace(/"/g, "\\\"")} <${nodesData[value.baseRefName].author?.login || ''}>`
     nodesData[value.baseRefName].node = createNodeIfNotExist(
       value.baseRefName,
       {
