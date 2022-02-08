@@ -63,6 +63,7 @@ const maxCharsLine = (string, chars = 35) => {
 
 const run = async ({ owner, repo, ignored }) => {
   let nodes = await getPRNodes({ owner, repo });
+  const filename = `${owner}.${repo}.pr_tree.svg`
 
   g = graphviz.digraph("G");
   banned = ignored;
@@ -119,7 +120,7 @@ const run = async ({ owner, repo, ignored }) => {
   if (banned.length) {
     console.log(banned, ' banned already removed')
   }
-  g.output("svg", `graphs/${owner}.${repo}.pr_tree.svg`);
+  g.output("svg", `graphs/${filename}`);
 }
 
 Object.entries(repositories).forEach(([owner, repos]) => {
