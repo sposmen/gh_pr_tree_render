@@ -28,13 +28,19 @@ Set your repositories configurations in `repositories.json`
 }
 ```
 
-Note: `ignored` are those full links strings that must be ignored to avoid extra data. 
+Note: `ignored` are those full links strings array that must be ignored to avoid unwanted PR's. 
 
 ### Run
 
-`node index.js`
+`node run.js`
 
 ### Result
 
-The result will be a `svg` file based on the `graphs/<GH_OWNER>.<GH_REPO>.pr_tree.svg` path
+The result will be a `svg` file based on the `graphs/<GITHUB_USER>.<REPO_NAME>.pr_tree.svg` path
 that could be open in browser
+
+#### Final SVG example
+
+<p align="center">
+  <img alt="Image Result" width="460" height="300" src="https://raw.githubusercontent.com/sposmen/gh_pr_tree_render/8033247e79dddcca67ca7d80e048e9d5864e0aeb/graphs/sposmen.gh_pr_tree_render.pr_tree.svg">
+</p>
