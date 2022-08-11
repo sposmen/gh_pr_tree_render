@@ -90,21 +90,20 @@ const run = async ({ owner, repo, ignored, mainBranch }) => {
   nodes
     .filter(filterNode)
     .forEach((node) => {
-      const parentData = {
-        ...nodesData[node.baseRefName] || {
-          headRefName: node.baseRefName,
-          title: node.baseRefName,
-          children: [],
-        }
+      const parentData = nodesData[node.baseRefName] || {
+        headRefName: node.baseRefName,
+        title: node.baseRefName,
+        children: [],
       };
 
-      const nodeData = {
-        ...nodesData[node.headRefName] || {
-          children: [],
+      // This also complements parentData if it comes from the PR nodes.
+      const nodeData = Object.assign(
+        nodesData[node.headRefName] || { children: [] },
+        {
+          ...node,
           parent: parentData
-        },
-        ...node,
-      };
+        }
+      );
 
       parentData.children.push(nodeData)
 
