@@ -30,6 +30,11 @@ const STATUS_BG = {
   UNKNOWN: '#f8f3d1'
 }
 
+const DIRECTION = {
+  UP: 'up',
+  DOWN: 'down'
+}
+
 const getPRNodes = async ({ owner, repo }) => {
   const result = await octokit.graphql(QUERY, { owner, repo });
   return result.repository.pullRequests.nodes;
@@ -40,7 +45,11 @@ let nodesData;
 let banned = []
 
 const createNodeIfNotExist = (id, attr = {}) => (
-  nodesData[id].node || g.addNode(id, Object.assign({}, attr))
+  nodesData[id].node || (() => {
+    const node = g.addNode(id, Object.assign({}, attr))
+    node.set("style", "filled")
+    return nodesData[id].node = node;
+  })()
 );
 
 const testValidation = new RegExp('^dependabot*');
@@ -61,24 +70,49 @@ const maxCharsLine = (string, chars = 35) => {
   return string.replace(regex, (_, x, y) => x ? `${x}-\n` : `${y}\n`)
 }
 
-const run = async ({ owner, repo, ignored }) => {
+const hierarchyLineProcessor = (node, nodeProcessor, direction = null) => {
+  nodeProcessor(node)
+  if (direction === null || direction === DIRECTION.DOWN) {
+    node.children.forEach((child) => hierarchyLineProcessor(child, nodeProcessor, DIRECTION.DOWN))
+  }
+  if ((direction === null || direction === DIRECTION.UP) && node.parent) {
+    hierarchyLineProcessor(node.parent, nodeProcessor, DIRECTION.UP)
+  }
+}
+
+const run = async ({ owner, repo, ignored, mainBranch }) => {
   let nodes = await getPRNodes({ owner, repo });
   const filename = `${owner}.${repo}.pr_tree.svg`
 
-  g = graphviz.digraph("G");
   banned = ignored;
   nodesData = {}
 
   nodes
     .filter(filterNode)
     .forEach((node) => {
-      nodesData[node.headRefName] = node
-      nodesData[node.baseRefName] = nodesData[node.baseRefName] ||
-        {
+      const parentData = {
+        ...nodesData[node.baseRefName] || {
           headRefName: node.baseRefName,
-          title: node.baseRefName
-          // baseRefName: ((node.baseRefName !== mainBranch) && mainBranch) || undefined
-        };
+          title: node.baseRefName,
+          children: [],
+        }
+      };
+
+      const nodeData = {
+        ...nodesData[node.headRefName] || {
+          children: [],
+          parent: parentData
+        },
+        ...node,
+      };
+
+      parentData.children.push(nodeData)
+
+      nodesData = {
+        ...nodesData,
+        [node.headRefName]: nodeData,
+        [node.baseRefName]: parentData
+      }
 
       let edge = [node.baseRefName, node.headRefName];
       if (process.env.UP_DOWN === 'true') {
@@ -86,10 +120,13 @@ const run = async ({ owner, repo, ignored }) => {
       } else {
         edge.push({ dir: 'back' })
       }
-      g.addEdge.apply(g, edge);
+      nodesData[node.headRefName].edge = edge;
     });
 
-  Object.entries(nodesData).forEach(([key, value]) => {
+  const nodeProcessor = (value) => {
+    if (value.edge) {
+      g.addEdge.apply(g, value.edge);
+    }
     if (value.baseRefName === undefined) return;
 
     const headLabel = `${value.title} <${value.author.login}>`;
@@ -101,7 +138,6 @@ const run = async ({ owner, repo, ignored }) => {
         fillcolor: STATUS_BG[value.mergeable]
       }
     );
-    value.node.set("style", "filled");
 
     const baseLabel = `${nodesData[value.baseRefName].title} <${nodesData[value.baseRefName].author?.login || ''}>`
     nodesData[value.baseRefName].node = createNodeIfNotExist(
@@ -112,19 +148,28 @@ const run = async ({ owner, repo, ignored }) => {
         fillcolor: STATUS_BG[nodesData[value.baseRefName].mergeable]
       }
     );
-  })
+  }
 
-  if (process.env.SHOW_DOT === 'true') {
-    console.log(g.to_dot());
+  const baseNode = nodesData[mainBranch];
+  g = graphviz.digraph("G");
+
+  if (baseNode) {
+    // Render hierarchy for the selected branch
+    hierarchyLineProcessor(baseNode, nodeProcessor)
+  } else {
+    // Render all branches except ignored
+    console.log("Note: No mainBranch found");
+    Object.entries(nodesData).forEach(([_k, value]) => nodeProcessor(value));
   }
-  if (banned.length) {
-    console.log(banned, ' banned already removed')
-  }
+
+  if (process.env.SHOW_DOT === 'true') console.log(g.to_dot());
+  if (banned.length) console.log(banned, ' banned already removed');
+
   g.output("svg", `graphs/${filename}`);
 }
 
 Object.entries(repositories).forEach(([owner, repos]) => {
-  Object.entries(repos).forEach(([repo, { ignored }]) => {
-    run({ owner, repo, ignored }).then(() => console.log(`Processed ${repo}`));
+  Object.entries(repos).forEach(([repo, { ignored, mainBranch }]) => {
+    run({ owner, repo, ignored, mainBranch }).then(() => console.log(`Processed ${repo}`));
   })
 })

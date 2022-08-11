@@ -10,7 +10,25 @@ Run `yarn` to install dependencies
 
 ### Configure
 
-Copy `.env.example` as `.env` and set the configurations accordingly
+Copy `.env.example` as `.env` and set the configurations accordingly.
+
+Set your repositories configurations in `repositories.json`
+```json
+{
+  "GITHUB_USER": {
+    "REPO_NAME": {
+      "mainBranch": "BRANCH_TO_RENDER",
+      "ignored": []
+    },
+    "REPO_NAME2": {
+      "mainBranch": "master",
+      "ignored": []
+    }
+  }
+}
+```
+
+Note: `ignored` are those full links strings that must be ignored to avoid extra data. 
 
 ### Run
 
