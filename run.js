@@ -82,7 +82,7 @@ const hierarchyLineProcessor = (node, nodeProcessor, direction = null) => {
 
 const run = async ({ owner, repo, ignored, mainBranch }) => {
   let nodes = await getPRNodes({ owner, repo });
-  const filename = `${owner}.${repo}.pr_tree.svg`
+  const filename = `${owner}.${repo}.${mainBranch}.pr_tree.svg`
 
   banned = ignored;
   nodesData = {}
