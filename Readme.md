@@ -1,4 +1,4 @@
-# Github PR hierarchy tree
+# Github Pull Request hierarchy tree renderer
 
 ### Pre-Requisites
 - NodeJS
