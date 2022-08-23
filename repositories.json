@@ -1,8 +1,8 @@
 {
   "sposmen": {
-    "gh_pr_tree_render": {
+    "gh_pr_tree_render": [{
       "mainBranch": "main",
       "ignored": []
-    }
+    }]
   }
 }

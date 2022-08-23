@@ -17,21 +17,22 @@ and could be also set in your `sh/bash/zsh` configuration files as export option
 
 ### Repos config
 Set your repositories configurations in `repositories.json`
+
 ```json
 {
   "GITHUB_USER": {
-    "REPO_NAME": {
+    "REPO_NAME": [{
       "mainBranch": "BRANCH_TO_RENDER",
       "ignored": []
-    },
-    "REPO_NAME2": {
+    }],
+    "REPO_NAME2": [{
       "mainBranch": "master",
       "ignored": []
-    }
+    }]
   }
 }
 ```
-
+- `REPO_NAME`: Can contain multiple hierarchies (array) to create them in a single call.
 - `mainBranch`: is the branch you want to hierarchy render. All parents and leafs will happen based on it. 
 If it is not set all PR's will be part of it 
 - `ignored` are those full links strings array that must be ignored to avoid unwanted PR's. 

@@ -168,7 +168,9 @@ const run = async ({ owner, repo, ignored, mainBranch }) => {
 }
 
 Object.entries(repositories).forEach(([owner, repos]) => {
-  Object.entries(repos).forEach(([repo, { ignored, mainBranch }]) => {
-    run({ owner, repo, ignored, mainBranch }).then(() => console.log(`Processed ${repo}`));
+  Object.entries(repos).forEach(([repo, hierarchies]) => {
+    hierarchies.forEach(({ ignored, mainBranch })=>{
+      run({ owner, repo, ignored, mainBranch }).then(() => console.log(`Processed ${repo}: ${mainBranch}`));
+    })
   })
 })
