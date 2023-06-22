@@ -7,20 +7,37 @@ const graphviz = require('graphviz');
 
 const { Octokit } = require('@octokit/core');
 
-const QUERY = `query($owner: String!, $repo: String!) {
-  repository(owner: $owner, name: $repo) {
-    pullRequests(states: [OPEN], last: 100, orderBy: {field: CREATED_AT, direction: DESC}) {
-      nodes {
-        title
-        headRefName
-        baseRefName
-        url
-        mergeable
-        author{login}
-      }
-    }
-  }
-}`
+// language=GRAPHQL
+const QUERY = `query ($owner: String!, $repo: String!) {
+	repository(owner: $owner, name: $repo) {
+		pullRequests(
+			states: [OPEN]
+			last: 100
+			orderBy: { field: CREATED_AT, direction: DESC }
+		) {
+			nodes {
+				title
+				headRefName
+				baseRefName
+				url
+				number
+				isDraft
+				mergeable
+				author {
+					login
+				}
+				labels(first: 10) {
+					nodes {
+						color
+						name
+					}
+				}
+				reviewDecision
+			}
+		}
+	}
+}
+`;
 
 const octokit = new Octokit({ auth: process.env.GITHUB_ACCESS_TOKEN })
 
@@ -47,7 +64,10 @@ let banned = []
 const createNodeIfNotExist = (id, attr = {}) => (
   nodesData[id].node || (() => {
     const node = g.addNode(id, Object.assign({}, attr))
-    node.set("style", "filled")
+    // node.set("style", "rounded")
+    node.set("style", "rounded,filled")
+    node.set("shape", "box")
+    node.set("target", "_blank")
     return nodesData[id].node = node;
   })()
 );
@@ -64,7 +84,7 @@ const filterNode = (node) => {
   return !testValidation.test(node.headRefName)
 }
 
-const maxCharsLine = (string, chars = 35) => {
+const maxCharsLine = (string, chars = 45) => {
   const wsLookup = 15; // Look backwards n characters for a whitespace
   const regex = new RegExp(String.raw`\s*(?:(\S{${chars}})|([\s\S]{${chars - wsLookup},${chars}})(?!\S))`, 'g');
   return string.replace(regex, (_, x, y) => x ? `${x}-\n` : `${y}\n`)
@@ -82,7 +102,7 @@ const hierarchyLineProcessor = (node, nodeProcessor, direction = null) => {
 
 const run = async ({ owner, repo, ignored, mainBranch }) => {
   let nodes = await getPRNodes({ owner, repo });
-  const filename = `${owner}.${repo}.${mainBranch}.pr_tree.svg`
+  const filename = `${owner}.${repo}.${mainBranch}.pr_tree.html`
 
   banned = ignored;
   nodesData = {}
@@ -128,21 +148,21 @@ const run = async ({ owner, repo, ignored, mainBranch }) => {
     }
     if (value.baseRefName === undefined) return;
 
-    const headLabel = `${value.title} <${value.author.login}>`;
+    const headLabel = `${maxCharsLine(value.title)}\n<${value.author.login}>`;
     value.node = createNodeIfNotExist(
       value.headRefName,
       {
-        label: maxCharsLine(headLabel),
+        label: headLabel,
         URL: value.url,
         fillcolor: STATUS_BG[value.mergeable]
       }
     );
 
-    const baseLabel = `${nodesData[value.baseRefName].title} <${nodesData[value.baseRefName].author?.login || ''}>`
+    const baseLabel = `${maxCharsLine(nodesData[value.baseRefName].title)}\n<${nodesData[value.baseRefName].author?.login || ''}>`
     nodesData[value.baseRefName].node = createNodeIfNotExist(
       value.baseRefName,
       {
-        label: maxCharsLine(baseLabel),
+        label: baseLabel,
         URL: nodesData[value.baseRefName].url,
         fillcolor: STATUS_BG[nodesData[value.baseRefName].mergeable]
       }

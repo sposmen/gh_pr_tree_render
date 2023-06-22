@@ -95,7 +95,7 @@ const run = async () => {
     console.log(g.to_dot());
   }
 
-  g.output("svg", `graphs/${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.svg`);
+  g.output("svg", `graphs/${process.env.GH_OWNER}.${process.env.GH_REPO}.pr_tree.html`);
 }
 
 run().then(() => console.log('Processed'));
