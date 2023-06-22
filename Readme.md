@@ -51,5 +51,5 @@ that could be open in browser
 #### Final SVG example
 
 <p align="center">
-  <img alt="Image Result" width="400" src="https://raw.githubusercontent.com/sposmen/gh_pr_tree_render/8033247e79dddcca67ca7d80e048e9d5864e0aeb/graphs/sposmen.gh_pr_tree_render.pr_tree.svg">
+  <img alt="Image Result" width="400" src="https://raw.githubusercontent.com/sposmen/gh_pr_tree_render/9310c692e9f15d0ada0e5fe5dc6670e61d99a7f6/graphs/sposmen.gh_pr_tree_render.pr_tree.svg">
 </p>
