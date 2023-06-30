@@ -64,10 +64,6 @@ let banned = []
 const createNodeIfNotExist = (id, attr = {}) => (
   nodesData[id].node || (() => {
     const node = g.addNode(id, Object.assign({}, attr))
-    // node.set("style", "rounded")
-    node.set("style", "rounded,filled")
-    node.set("shape", "box")
-    node.set("target", "_blank")
     return nodesData[id].node = node;
   })()
 );
@@ -170,7 +166,11 @@ const run = async ({ owner, repo, ignored, mainBranch }) => {
   }
 
   const baseNode = nodesData[mainBranch];
-  g = graphviz.digraph("G");
+  g = graphviz.digraph(mainBranch);
+  g.setNodeAttribut('style', 'rounded,filled')
+  g.setNodeAttribut('shape', 'box')
+  g.setNodeAttribut('target', '_blank')
+  g.setNodeAttribut('fontname', 'Courier');
 
   if (baseNode) {
     // Render hierarchy for the selected branch
