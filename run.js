@@ -1,11 +1,11 @@
-const dotenv = require('dotenv');
-const result = dotenv.config()
-const repositories = require('./repositories')
+import { config } from 'dotenv';
+import graphviz from 'graphviz';
+import { Octokit } from '@octokit/core';
+
+import repositories from './repositories.js';
+
+const result = config();
 if (result.error) throw result.error;
-
-const graphviz = require('graphviz');
-
-const { Octokit } = require('@octokit/core');
 
 // language=GRAPHQL
 const QUERY = `query ($owner: String!, $repo: String!) {
@@ -53,7 +53,11 @@ const DIRECTION = {
 }
 
 const getPRNodes = async ({ owner, repo }) => {
-  const result = await octokit.graphql(QUERY, { owner, repo });
+  const result = await (async () => {
+    getPRNodes[owner] = getPRNodes[owner] || {};
+    getPRNodes[owner][repo] = getPRNodes[owner][repo] || await octokit.graphql(QUERY, { owner, repo });
+    return getPRNodes[owner][repo]
+  })();
   return result.repository.pullRequests.nodes;
 }
 
