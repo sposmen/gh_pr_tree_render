@@ -1,26 +1,23 @@
-# gh-pr-tree-render
+# Github PR Tree renderer
 
-a [Sails v1](https://sailsjs.com) application
+## Steps to use it
+- Clone the repo: `git clone git@github.com:sposmen/gh_pr_tree_render.git`
+- Go to the directory `cd gh_pr_tree_render`
+- Ensure you are in the V2 `git checkout v2`
+- Install node dependencies with  `yarn`
+- Build the assets `yarn run build:prod`
+- Start the app `yarn run start-app`
+- [Open the app](http://localhost:1337)
+
+## The convention to open a Tree is like
+
+### `http://localhost:1337/<OWNER>/<REPO>/<BRANCH: Optional>`
+
+## This is how it looks
+
+<p align="center">
+  <img alt="Image Result" width="400" src="https://raw.githubusercontent.com/sposmen/gh_pr_tree_render/43f50041e1f712d807191fb65ae2bc7389c06fdf/assets/images/gh_tree_example.png">
+</p>
 
 
-### Links
-
-+ [Sails framework documentation](https://sailsjs.com/get-started)
-+ [Version notes / upgrading](https://sailsjs.com/documentation/upgrading)
-+ [Deployment tips](https://sailsjs.com/documentation/concepts/deployment)
-+ [Community support options](https://sailsjs.com/support)
-+ [Professional / enterprise options](https://sailsjs.com/enterprise)
-
-
-### Version info
-
-This app was originally generated on Fri Sep 09 2022 07:22:07 GMT-0700 (Pacific Daylight Time) using Sails v1.5.3.
-
-<!-- Internally, Sails used [`sails-generate@2.0.7`](https://github.com/balderdashy/sails-generate/tree/v2.0.7/lib/core-generators/new). -->
-
-
-
-<!--
-Note:  Generators are usually run using the globally-installed `sails` CLI (command-line interface).  This CLI version is _environment-specific_ rather than app-specific, thus over time, as a project's dependencies are upgraded or the project is worked on by different developers on different computers using different versions of Node.js, the Sails dependency in its package.json file may differ from the globally-installed Sails CLI release it was originally generated with.  (Be sure to always check out the relevant [upgrading guides](https://sailsjs.com/upgrading) before upgrading the version of Sails used by your app.  If you're stuck, [get help here](https://sailsjs.com/support).)
--->
-
+Powered By [SailsJS](https://sailsjs.com) and [React](https://react.dev/)
