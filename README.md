@@ -1,5 +1,9 @@
 # Github PR Tree renderer
 
+## Requirements
+- NodeJS
+- Yarn
+
 ## Steps to use it
 - Clone the repo: `git clone git@github.com:sposmen/gh_pr_tree_render.git`
 - Go to the directory `cd gh_pr_tree_render`
@@ -17,7 +21,7 @@
 ## This is how it looks
 
 <p align="center">
-  <img alt="Image Result" width="400" src="https://raw.githubusercontent.com/sposmen/gh_pr_tree_render/43f50041e1f712d807191fb65ae2bc7389c06fdf/assets/images/gh_tree_example.png">
+  <img alt="Image Result" width="400" src="https://raw.githubusercontent.com/sposmen/gh_pr_tree_render/2ad6e45237b7b5d7799a124bb3c6d0603ca3a8cd/assets/images/gh_tree_example.png">
 </p>
 
 
