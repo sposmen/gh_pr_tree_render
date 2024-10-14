@@ -8,6 +8,7 @@
 - Build the assets `yarn run build:prod`
 - Start the app `yarn run start-app`
 - [Open the app](http://localhost:1337)
+- In the config set your [github token](https://github.com/settings/tokens)
 
 ## The convention to open a Tree is like
 
