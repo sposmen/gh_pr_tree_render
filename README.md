@@ -7,7 +7,6 @@
 ## Steps to use it
 - Clone the repo: `git clone git@github.com:sposmen/gh_pr_tree_render.git`
 - Go to the directory `cd gh_pr_tree_render`
-- Ensure you are in the V2 `git checkout v2`
 - Install node dependencies with  `yarn`
 - Build the assets `yarn run build:prod`
 - Start the app `yarn run start-app`
