@@ -36,8 +36,8 @@ const QUERY = `query ($owner: String!, $repo: String!) {
 }
 `;
 
-// 60 Min cache
-const cacheTime = 60*60*1000;
+// 30 Min cache
+const cacheTime = 30*60*1000;
 
 const getPRNodes = async ({ octokit, owner, repo }) => {
   const result = await (async () => {

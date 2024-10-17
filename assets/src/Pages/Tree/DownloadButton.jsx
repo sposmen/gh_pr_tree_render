@@ -6,6 +6,7 @@ import {
   getViewportForBounds,
 } from '@xyflow/react';
 import { toSvg } from 'html-to-image';
+import { Download } from 'react-bootstrap-icons';
 
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
@@ -51,7 +52,7 @@ function DownloadButton() {
   return (
     <Panel position="top-right">
       <button className="download-btn" onClick={onClick}>
-        Download Image
+        Download Image <Download />
       </button>
     </Panel>
   );

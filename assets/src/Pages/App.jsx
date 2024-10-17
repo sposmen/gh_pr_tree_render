@@ -5,12 +5,12 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import { Layout } from "components/Pages/Layout";
-import ErrorPage from "components/Pages/Error";
-import Home from "components/Pages/Home";
+import { Layout } from "./Layout";
+import ErrorPage from "./Error";
+import Home from "./Home";
 
-import { configRoutes } from "./Config";
 import { treeRoutes } from "./Tree/Tree";
+import { configRoutes } from "./Config";
 
 const router = createBrowserRouter([
   {
