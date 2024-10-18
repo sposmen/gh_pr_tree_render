@@ -13,6 +13,9 @@
 - [Open the app](http://localhost:1337)
 - In the config set your [github token](https://github.com/settings/tokens)
 
+### Note:
+Repo information is persisted fro 30 minutes to make it faster and more reliable.
+
 ## The convention to open a Tree is like
 
 ### `http://localhost:1337/<OWNER>/<REPO>/<BRANCH: Optional>`
