@@ -11,7 +11,7 @@
 - Build the assets `yarn run build:prod`
 - Start the app `yarn run start-app`
 - [Open the app](http://localhost:1337)
-- In the config set your [github token](https://github.com/settings/tokens)
+- In the config set your [github token](https://github.com/settings/tokens) ([Config](http://localhost:1337/config))
 
 ### Note:
 Repo information is persisted fro 30 minutes to make it faster and more reliable.
