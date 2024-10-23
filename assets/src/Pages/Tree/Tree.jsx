@@ -45,8 +45,7 @@ function Tree() {
       {!rawNodes && 'Nothing to show'}
       {rawNodes && (
         <>
-          <TreeRenderer rawNodes={rawNodes} branch={branch} />
-          {/*<pre>{JSON.stringify(rawNodes, undefined, 2)}</pre>*/}
+          <TreeRenderer rawNodes={rawNodes}/>
         </>
       )}
     </>

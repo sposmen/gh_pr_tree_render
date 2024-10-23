@@ -8,19 +8,19 @@ import {
 import { toSvg } from 'html-to-image';
 import { Download } from 'react-bootstrap-icons';
 
-function downloadImage(dataUrl) {
-  const a = document.createElement('a');
-
-  a.setAttribute('download', 'reactflow.svg');
-  a.setAttribute('href', dataUrl);
-  a.click();
-}
-
 const imageWidth = 1024;
 const imageHeight = 1500;
 
-function DownloadButton() {
+function DownloadButton({fileNameBase}) {
   const { getNodes } = useReactFlow();
+  const downloadImage = (dataUrl) => {
+    const a = document.createElement('a');
+
+    a.setAttribute('download', `${fileNameBase}.svg`);
+    a.setAttribute('href', dataUrl);
+    a.click();
+  }
+
   const onClick = () => {
     const container = document.querySelector('.react-flow__viewport')
     const width = container.offsetWidth

@@ -7,10 +7,12 @@ import nodeReducer from "components/Pages/Tree/helpers/nodeReducer";
 import './styles/index.scss';
 import { PRNode } from "components/Pages/Tree/PRNode";
 import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1 };
 
-export default function TreeRenderer({ rawNodes, branch }) {
+export default function TreeRenderer({ rawNodes }) {
+  const { repo, branch } = useParams();
   const { nodes: nodesToDelimit } = rawNodes.reduce(nodeReducer, { nodes: {}, edges: [] });
   // Delimit to branch
   const { nodes: dagreNodes, edges } = branchDelimiter(nodesToDelimit, branch)
@@ -38,7 +40,7 @@ export default function TreeRenderer({ rawNodes, branch }) {
       >
         <Controls />
         <Background gap={15} />
-        <DownloadButton />
+        <DownloadButton fileNameBase={`${repo}.${branch}`} />
       </ReactFlow>
     </div>
   );
