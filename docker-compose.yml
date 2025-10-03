@@ -1,0 +1,12 @@
+version: '3.8'
+name: gh-pr-tree
+services:
+  app:
+    build: .
+    image: gh-pr-tree
+    ports:
+      - "1337:1337"
+    volumes:
+      - .:/app # Mounts the current directory to /usr/src/app in the container
+      - /app/node_modules # Prevents host's node_modules from overriding container's
+    restart: unless-stopped
