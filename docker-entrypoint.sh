@@ -2,9 +2,9 @@
 set -e
 
 echo "Installing dependencies..."
+yarn install --frozen-lockfile
 
-if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules)" ]; then
-  yarn install
-fi
+echo "Building assets..."
+yarn run build:prod
 
 exec "$@"

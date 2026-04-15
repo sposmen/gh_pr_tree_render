@@ -8,8 +8,11 @@ services:
       - "1337:1337"
     volumes:
       - .:/app # Mounts the current directory to /usr/src/app in the container
-      - node_modules:/app/node_modules # Prevents host's node_modules from overriding container's
+      # Prevents host's node_modules from overriding container's
+      - tmp:/app/.tmp
+      - node_modules:/app/node_modules
     restart: unless-stopped
 
 volumes:
   node_modules:
+  tmp:

@@ -7,7 +7,7 @@ const STATUS_BG = {
   MERGEABLE: '#aaf8bc',
   CONFLICTING: '#fddbdb',
   UNKNOWN: '#f8f3d1'
-}
+};
 
 export default ({ nodes: oldNodes }, node) => {
   const parentData = oldNodes[node.baseRefName] || {
@@ -42,17 +42,17 @@ export default ({ nodes: oldNodes }, node) => {
     id: `${parentData.id}-${nodeData.id}`,
     source: parentData.id,
     target: nodeData.id,
-  }
+  };
 
   nodeData.edge = edge;
 
-  parentData.children.push(nodeData)
+  parentData.children.push(nodeData);
 
   const nodes = {
     ...oldNodes,
     [node.headRefName]: nodeData,
     [node.baseRefName]: parentData
-  }
+  };
 
-  return { nodes }
-}
+  return { nodes };
+};

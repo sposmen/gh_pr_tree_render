@@ -7,14 +7,17 @@ module.exports = {
     static: {
       directory: path.join(__dirname, '../../public'),
     },
-    host: "localhost",
+    host: 'localhost',
     compress: true,
     port: 9000,
-    proxy: {
-      '/api': 'http://localhost:1337',
-    },
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:1337',
+      },
+    ],
     historyApiFallback: {
       index: '/index.html'
     }
   },
-}
+};

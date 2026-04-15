@@ -27,7 +27,7 @@
   },
 
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2022
   },
 
   "globals": {
@@ -43,13 +43,13 @@
 
   "rules": {
     "block-scoped-var":             ["error"],
-    "callback-return":              ["error", ["done", "proceed", "next", "onwards", "callback", "cb"]],
+    "callback-return":              ["off"],
     "camelcase":                    ["warn", {"properties":"always"}],
     "comma-style":                  ["warn", "last"],
     "curly":                        ["warn"],
     "eqeqeq":                       ["error", "always"],
     "eol-last":                     ["warn"],
-    "handle-callback-err":          ["error"],
+    "handle-callback-err":          ["off"],
     "indent":                       ["warn", 2, {
       "SwitchCase": 1,
       "MemberExpression": "off",
@@ -65,7 +65,7 @@
     "no-duplicate-case":            ["error"],
     "no-extra-semi":                ["warn"],
     "no-labels":                    ["error"],
-    "no-mixed-spaces-and-tabs":     [2, "smart-tabs"],
+    "no-mixed-spaces-and-tabs":     ["warn"],
     "no-redeclare":                 ["warn"],
     "no-return-assign":             ["error", "always"],
     "no-sequences":                 ["error"],

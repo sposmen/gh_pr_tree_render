@@ -1,1 +1,1 @@
-import './Pages/App'
+import './Pages/App';

@@ -1,6 +1,6 @@
 let Octokit;
 (async function () {
-  const OctokitBase = await import('@octokit/core')
+  const OctokitBase = await import('@octokit/core');
   Octokit = OctokitBase.Octokit;
 })();
 
@@ -42,19 +42,19 @@ const cacheTime = 30*60*1000;
 const getPRNodes = async ({ octokit, owner, repo }) => {
   const result = await (async () => {
     let nodes;
-    const criteria = { owner, repo }
+    const criteria = { owner, repo };
     const repoRecord = await Repo.findOrCreate(criteria, criteria);
 
     if(!repoRecord.nodes || (cacheTime + repoRecord.updatedAt < Date.now())){
       nodes = await octokit.graphql(QUERY, { owner, repo });
       await Repo.updateOne({ id: repoRecord.id }).set({ nodes });
     } else{
-      nodes = repoRecord.nodes
+      nodes = repoRecord.nodes;
     }
-    return nodes
+    return nodes;
   })();
   return result.repository.pullRequests.nodes;
-}
+};
 
 module.exports = {
   friendlyName: 'Tree data retriever',
@@ -80,10 +80,13 @@ module.exports = {
 
   exits: {},
 
-  fn: async function ({ owner, repo, branch }) {
-    let nodes = null, errorMessage = null;
-    const { value: githubToken } = await Config.findOne({ name: 'github_token' });
-    const octokit = new Octokit({ auth: githubToken });
+  fn: async function ({ owner, repo }) {
+    let nodes = null; let errorMessage = null;
+    const configRecord = await Config.findOne({ name: 'github_token' });
+    if (!configRecord) {
+      return { nodes: null, error: 'GitHub token is not configured. Please set it in the Config page.' };
+    }
+    const octokit = new Octokit({ auth: configRecord.value });
     try {
       nodes = await getPRNodes({ octokit, owner, repo });
     } catch (error) {

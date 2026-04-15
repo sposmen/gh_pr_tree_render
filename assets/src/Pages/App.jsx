@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import { Layout } from "./Layout";
+import { TreeLayout } from "./TreeLayout";
 import ErrorPage from "./Error";
 import Home from "./Home";
 
@@ -23,10 +24,14 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       ...configRoutes,
-      ...treeRoutes
     ],
   },
-
+  {
+    path: "/",
+    element: <TreeLayout />,
+    errorElement: <ErrorPage />,
+    children: treeRoutes,
+  },
 ]);
 
 const App = () => {
