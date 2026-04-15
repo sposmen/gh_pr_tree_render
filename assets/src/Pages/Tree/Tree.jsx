@@ -1,17 +1,19 @@
 import axios from "axios";
 import TreeRenderer from "components/Pages/Tree/TreeRenderer";
 import { useLoaderData } from "react-router-dom";
+import OwnersList, { ownersLoader } from "./OwnersList";
+import OwnerRepos, { ownerReposLoader } from "./OwnerRepos";
 
 export const treeRoutes = [
   {
     path: "tree",
-    element: <Tree />,
-    loader: loader,
+    element: <OwnersList />,
+    loader: ownersLoader,
   },
   {
     path: "tree/:owner",
-    element: <Tree />,
-    loader: loader,
+    element: <OwnerRepos />,
+    loader: ownerReposLoader,
   },
   {
     path: "tree/:owner/:repo",
@@ -19,19 +21,19 @@ export const treeRoutes = [
     loader: loader,
   },
   {
-    path: "tree/:owner/:repo/:branch",
+    path: "tree/:owner/:repo/*",
     element: <Tree />,
     loader: loader,
   }
 ]
 
-export async function loader({ params: { owner, repo, branch = null } }) {
-  if (!repo) return {};
+export async function loader({ params }) {
+  const { owner, repo } = params;
+  const branch = params['*'] || null;
 
-  let url = `/api/v1/tree/${owner}/${repo}`;
-  if (branch) url += `/${branch}`;
-
-  const { data } = await axios.get(url);
+  const { data } = await axios.get(`/api/v1/tree/${owner}/${repo}`, {
+    params: branch ? { branch } : {}
+  });
 
   return { ...data, branch }
 }

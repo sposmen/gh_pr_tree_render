@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 const defaultViewport = { x: 0, y: 0, zoom: 1 };
 
 export default function TreeRenderer({ rawNodes }) {
-  const { repo, branch } = useParams();
+  const { repo, '*': branch } = useParams();
   const { nodes: nodesToDelimit } = rawNodes.reduce(nodeReducer, { nodes: {}, edges: [] });
   // Delimit to branch
   const { nodes: dagreNodes, edges } = branchDelimiter(nodesToDelimit, branch)

@@ -20,7 +20,9 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': { view: 'pages/homepage' },
-  'GET /api/v1/tree/:owner/:repo/:branch?': { action: 'tree/index' },
+  'GET /api/v1/tree': { action: 'owners/list' },
+  'GET /api/v1/tree/:owner': { action: 'owners/repos' },
+  'GET /api/v1/tree/:owner/:repo': { action: 'tree/index' },
 
 
   /***************************************************************************
