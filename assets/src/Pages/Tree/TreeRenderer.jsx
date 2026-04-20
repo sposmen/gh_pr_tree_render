@@ -1,6 +1,7 @@
 import '@xyflow/react/dist/style.css';
-import { Background, Controls, ReactFlow } from '@xyflow/react';
+import { Background, Controls, Panel, ReactFlow } from '@xyflow/react';
 import DownloadButton from "components/Pages/Tree/DownloadButton";
+import RefreshButton from "components/Pages/Tree/RefreshButton";
 import branchDelimiter from "components/Pages/Tree/helpers/branchDelimiter";
 import dagreSolver from "components/Pages/Tree/helpers/dagreSolver";
 import nodeReducer from "components/Pages/Tree/helpers/nodeReducer";
@@ -40,7 +41,10 @@ export default function TreeRenderer({ rawNodes }) {
       >
         <Controls />
         <Background gap={15} />
-        <DownloadButton fileNameBase={`${repo}.${branch}`} />
+        <Panel position="top-right" className="tree-actions">
+          <RefreshButton />
+          <DownloadButton fileNameBase={`${repo}.${branch}`} />
+        </Panel>
       </ReactFlow>
     </div>
   );

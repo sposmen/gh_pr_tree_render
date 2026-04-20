@@ -31,17 +31,40 @@ body {
       align-items: center;
     }
 
-    .download-btn {
+    .tree-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tree-action-btn {
       border: 1px solid #eee;
       background: #e8e8e8;
       padding: 10px 20px;
       border-radius: 5px;
       font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
 
       &:hover {
         opacity: 0.9;
       }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .spin {
+        animation: tree-action-spin 0.8s linear infinite;
+      }
     }
   }
+}
+
+@keyframes tree-action-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

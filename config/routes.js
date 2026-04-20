@@ -23,6 +23,7 @@ module.exports.routes = {
   'GET /api/v1/tree': { action: 'owners/list' },
   'GET /api/v1/tree/:owner': { action: 'owners/repos' },
   'GET /api/v1/tree/:owner/:repo': { action: 'tree/index' },
+  'POST /api/v1/tree/:owner/:repo/refresh': { action: 'tree/refresh' },
 
 
   /***************************************************************************

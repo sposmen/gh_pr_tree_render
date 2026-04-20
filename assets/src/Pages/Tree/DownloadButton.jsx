@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, useReactFlow } from '@xyflow/react';
+import { useReactFlow } from '@xyflow/react';
 import { Download } from 'react-bootstrap-icons';
 import { useParams } from 'react-router-dom';
 
@@ -181,11 +181,9 @@ function DownloadButton({ fileNameBase }) {
   };
 
   return (
-    <Panel position="top-right">
-      <button className="download-btn" onClick={onClick}>
-        Download Image <Download />
-      </button>
-    </Panel>
+    <button className="tree-action-btn" onClick={onClick}>
+      Download Image <Download />
+    </button>
   );
 }
 
