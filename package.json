@@ -1,21 +1,23 @@
 {
   "name": "gh-pr-tree-render",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
     "@dagrejs/dagre": "^1.1.8",
     "@octokit/core": "^6.1.6",
-    "@octokit/rest": "^21.1.1",
     "@sailshq/connect-redis": "^3.2.1",
     "@sailshq/lodash": "^3.10.7",
     "@sailshq/socket.io-redis": "^5.2.1",
     "@xyflow/react": "^12.10.2",
     "axios": "^1.9.0",
+    "bootstrap": "^5.3.8",
+    "express-static-gzip": "^3.0.0",
     "grunt": "^1.6.2",
     "html-to-image": "^1.11.11",
     "react": "^18.3.1",
+    "react-bootstrap": "^2.10.10",
     "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.3",
@@ -23,37 +25,25 @@
     "sails-hook-grunt": "^5.0.0",
     "sails-hook-orm": "^4.0.3",
     "sails-hook-sockets": "^2.0.4",
-    "sails-sqlite": "^0.2.6",
-    "webpack-merge": "^5.10.0"
+    "sails-sqlite": "^0.2.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.2",
-    "@babel/preset-react": "^7.28.0",
-    "babel-loader": "^9.2.1",
-    "bootstrap": "^5.3.8",
-    "css-loader": "^7.1.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^8.57.1",
-    "html-webpack-plugin": "^5.6.6",
     "npm-run-all": "^4.1.5",
-    "react-bootstrap": "^2.10.10",
     "rimraf": "^6.0.1",
     "sass": "^1.99.0",
-    "sass-loader": "^16.0.7",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.106.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.2.1"
+    "vite": "^8.0.9",
+    "vite-plugin-compression2": "^2.5.3"
   },
   "scripts": {
-    "start": "npm-run-all --parallel open:client lift",
-    "container:start": "npm-run-all build start-app",
+    "start:dev": "npm-run-all --parallel open:client lift",
+    "start": "npm-run-all build start-app",
     "start:debug": "npm-run-all --parallel open:client debug",
-    "open:client": "webpack-dev-server --mode development --open",
-    "webpacker-dev": "./node_modules/.bin/webpack-dev-server",
-    "build": "yarn build:prod",
-    "build:dev": "webpack --mode development",
-    "build:prod": "webpack --mode production",
+    "open:client": "vite",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:prod": "vite build",
     "clean": "rimraf .tmp && mkdirp .tmp/public",
     "lift": "sails lift",
     "debug": "node --inspect app.js",
@@ -66,11 +56,11 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/megiraldo/gh-pr-tree-render.git"
+    "url": "git://github.com/sposmen/gh-pr-tree-render.git"
   },
   "resolutions": {
     "@sailshq/nedb": "github:sposmen/nedb#1f58b0b4791e50e569af5865782736ded003fd9d"
   },
-  "author": "jaimegiraldo",
+  "author": "sposmen",
   "license": ""
 }

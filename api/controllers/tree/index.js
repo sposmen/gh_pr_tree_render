@@ -36,8 +36,8 @@ const QUERY = `query ($owner: String!, $repo: String!) {
 }
 `;
 
-// 30 Min cache
-const cacheTime = 30*60*1000;
+// It is in milliseconds so 30 Min cache = 1800000
+const cacheTime = 1800000;
 
 const fetchAndStorePRNodes = async ({ octokit, owner, repo, repoRecord }) => {
   const nodes = await octokit.graphql(QUERY, { owner, repo });

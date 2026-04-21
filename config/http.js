@@ -9,6 +9,9 @@
  * https://sailsjs.com/config/http
  */
 
+const expressStaticGzip = require('express-static-gzip');
+const path = require('path');
+
 module.exports.http = {
 
   /****************************************************************************
@@ -45,6 +48,12 @@ module.exports.http = {
       sails.log.debug(req.method, req.url);
       next();
     },
+
+    www: expressStaticGzip(path.resolve(__dirname, '../.tmp/public'), {
+      enableBrotli: true,
+      orderPreference: ['br', 'gz'],
+      serveStatic: { maxAge: '1y' },
+    }),
 
 
     /***************************************************************************
