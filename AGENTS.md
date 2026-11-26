@@ -57,7 +57,7 @@ The token is configured through `/config` and persisted in Config as `github_tok
 - `assets/src/Pages/Tree/OwnersList.jsx`, `OwnerRepos.jsx` — Browsing screens.
 - `assets/src/Pages/Config.jsx` — Token configuration UI.
 - `assets/src/Pages/Tree/TreeRenderer.jsx` — React Flow graph, query state, filter UI, suggestions, and match count.
-- `assets/src/Pages/Tree/PRNode.jsx` — Title, author, PR link, and branch-focused navigation.
+- `assets/src/Pages/Tree/PRNode.jsx` — Title, author, PR link, and branch-focused navigation. Live nodes have a left status stripe with a tooltip/accessibility label: draft gray (takes priority), review required yellow, approved green, changes requested red, and no stripe for unknown review status. Conflict backgrounds remain independent. These stripes are not currently included in SVG exports.
 - `assets/src/Pages/Tree/RefreshButton.jsx` — Explicit data refresh.
 - `assets/src/Pages/Tree/DownloadButton.jsx` — Custom SVG generation from React Flow nodes and edges in graph coordinates, independent of viewport clipping; exports the full filtered graph. Not an html-to-image export.
 
