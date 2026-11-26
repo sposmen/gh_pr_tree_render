@@ -19,13 +19,28 @@ export const treeRoutes = [
     path: "tree/:owner/:repo",
     element: <Tree />,
     loader: loader,
+    shouldRevalidate: shouldRevalidateTree,
   },
   {
     path: "tree/:owner/:repo/*",
     element: <Tree />,
     loader: loader,
+    shouldRevalidate: shouldRevalidateTree,
   }
 ]
+
+// Local filter changes do not need another GitHub/cache request.
+// Identical URLs still use the default behavior for explicit refreshes.
+export function shouldRevalidateTree({ currentUrl, nextUrl, defaultShouldRevalidate, formMethod }) {
+  if (!formMethod && currentUrl.pathname === nextUrl.pathname && currentUrl.search !== nextUrl.search) {
+    const current = new URLSearchParams(currentUrl.search);
+    const next = new URLSearchParams(nextUrl.search);
+    current.delete('q');
+    next.delete('q');
+    if (current.toString() === next.toString()) return false;
+  }
+  return defaultShouldRevalidate;
+}
 
 export async function loader({ params }) {
   const { owner, repo } = params;

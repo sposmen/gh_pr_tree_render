@@ -57,7 +57,7 @@ The token is configured through `/config` and persisted in Config as `github_tok
 - `assets/src/Pages/Tree/OwnersList.jsx`, `OwnerRepos.jsx` — Browsing screens.
 - `assets/src/Pages/Config.jsx` — Token configuration UI.
 - `assets/src/Pages/Tree/TreeRenderer.jsx` — React Flow graph, query state, filter UI, suggestions, and match count.
-- `assets/src/Pages/Tree/PRNode.jsx` — Title, author, PR link, and branch-focused navigation. Live nodes have a left status stripe with a tooltip/accessibility label: draft gray (takes priority), review required yellow, approved green, changes requested red, and no stripe for unknown review status. Conflict backgrounds remain independent. These stripes are not currently included in SVG exports.
+- `assets/src/Pages/Tree/PRNode.jsx` — Title, author, PR link, and branch-focused navigation. Live nodes have a left status stripe with a tooltip/accessibility label: draft gray (takes priority), review required yellow, approved green, changes requested red, and orange for unknown review status. Hovering/focusing the stripe shows each reviewer's latest submitted review from the last 100 reviews (with a truncation notice); cached payloads without reviews prompt a refresh. Conflict backgrounds remain independent. These stripes are not currently included in SVG exports.
 - `assets/src/Pages/Tree/RefreshButton.jsx` — Explicit data refresh.
 - `assets/src/Pages/Tree/DownloadButton.jsx` — Custom SVG generation from React Flow nodes and edges in graph coordinates, independent of viewport clipping; exports the full filtered graph. Not an html-to-image export.
 
@@ -91,7 +91,7 @@ These are observed gaps and proposed follow-ups, not implemented capabilities or
 
 - [ ] Validate unsupported qualifiers, invalid values, and unfinished quotes rather than showing an unexplained empty result.
 - [ ] Test datalist behavior across browsers, keyboard navigation, screen readers, and mobile. Consider a dedicated accessible combobox for caret-aware suggestions and larger value lists (currently capped at 50).
-- [ ] Persist queries in URL search parameters for shareable views and navigation; define reset behavior when switching repositories/branches.
+- [x] Persist queries in URL search parameter `q` for shareable views and Back/Forward navigation. Typing pushes history after 400 ms idle; Clear commits immediately. Navigation restores the URL query and cancels pending edits; repository/branch links without `q` reset filters. Query-only changes skip loader revalidation; explicit refresh still revalidates.
 - [ ] Add requested-reviewer/assignee filters if needed; fetch their metadata first. Closed/merged states require backend query changes.
 - [ ] Distinguish unknown mergeability from genuinely conflict-free PRs (`conflicts:false` currently includes UNKNOWN).
 - [ ] Review viewport behavior for sparse matches, long titles, small screens, and filter/action panel overlap. Verify filtering together with refresh and SVG download in a browser.

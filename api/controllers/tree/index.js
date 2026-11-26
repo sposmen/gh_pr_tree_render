@@ -30,6 +30,13 @@ const QUERY = `query ($owner: String!, $repo: String!) {
           }
         }
         reviewDecision
+        reviews(last: 100) {
+          nodes {
+            author { login }
+            state
+          }
+          pageInfo { hasPreviousPage }
+        }
       }
     }
   }

@@ -9,15 +9,40 @@ import dagreSolver from "components/Pages/Tree/helpers/dagreSolver";
 import nodeReducer from "components/Pages/Tree/helpers/nodeReducer";
 import './styles/index.scss';
 import { PRNode } from "components/Pages/Tree/PRNode";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { filterGraph, filterSuggestions } from './helpers/prFilters';
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1 };
 
 export default function TreeRenderer({ rawNodes }) {
   const { repo, '*': branch } = useParams();
-  const [query, setQuery] = useState('');
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get('q') || '');
+  const pendingQuery = useRef(null);
+
+  // Navigation (including Back/Forward) wins over any pending edit.
+  useEffect(() => {
+    clearTimeout(pendingQuery.current);
+    setQuery(new URLSearchParams(location.search).get('q') || '');
+    return () => clearTimeout(pendingQuery.current);
+  }, [location]);
+
+  function updateQuery(value, immediate = false) {
+    setQuery(value);
+    clearTimeout(pendingQuery.current);
+    const commit = () => {
+      const next = new URLSearchParams(searchParams);
+      if (value) next.set('q', value);
+      else next.delete('q');
+      if (next.toString() !== searchParams.toString()) {
+        setSearchParams(next, { preventScrollReset: true });
+      }
+    };
+    if (immediate) commit();
+    else pendingQuery.current = setTimeout(commit, 400);
+  }
   const { theme } = useTheme();
   const graph = useMemo(() => {
     const { nodes } = rawNodes.reduce(nodeReducer, { nodes: {}, edges: [] });
@@ -54,10 +79,10 @@ export default function TreeRenderer({ rawNodes }) {
           <label htmlFor="pr-filter-input">Filter pull requests</label>
           <div className="pr-filter-input">
             <input id="pr-filter-input" type="search" list="pr-filter-suggestions"
-              value={query} onChange={event => setQuery(event.target.value)}
+              value={query} onChange={event => updateQuery(event.target.value)}
               placeholder="Title, author:, label:, base:, draft:…"
               aria-describedby="pr-filter-help" autoComplete="off" />
-            <button type="button" onClick={() => setQuery('')} disabled={!query}>Clear</button>
+            <button type="button" onClick={() => updateQuery('', true)} disabled={!query}>Clear</button>
           </div>
           <datalist id="pr-filter-suggestions">
             {suggestions.map(value => <option key={value} value={value} />)}

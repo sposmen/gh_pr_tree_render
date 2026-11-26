@@ -15,6 +15,10 @@ const Navigation = ()=>{
           <Nav.Link as={Link} to="/">Home</Nav.Link>
           <Nav.Link as={Link} to="/tree">Tree</Nav.Link>
           <Nav.Link as={Link} to="/config">Config</Nav.Link>
+          <Nav.Link href="https://github.com/sposmen/gh_pr_tree_render"
+            target="_blank" rel="noopener noreferrer">
+            GitHub
+          </Nav.Link>
         </Nav>
         <select className="form-select form-select-sm w-auto" aria-label="Color theme"
           value={mode} onChange={event => setMode(event.target.value)}>
