@@ -13,11 +13,6 @@ const DEFAULT_CONFIGS = [
   { name: 'github_token', value: '' }
 ];
 
-export async function loader({ params }) {
-  const contact = await getContact(params.contactId);
-  return { contact };
-}
-
 export const configRoutes = [
   {
     path: "config",

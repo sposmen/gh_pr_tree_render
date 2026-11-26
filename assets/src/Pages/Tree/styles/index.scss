@@ -6,13 +6,19 @@ body {
 }
 
 #app {
+  position: relative;
   width: 100%;
   height: 100%;
+  min-height: 0;
 
   .download-image {
+    --xy-edge-stroke: #78838e;
+
+    &.dark { --xy-edge-stroke: #9aa5b1; }
+
     .pr-node {
       text-align: center;
-      font-size: calc(0.35vh + 0.35vw);
+      font-size: 12px;
 
       a {
         color: inherit; /* blue colors for links too */
@@ -22,13 +28,42 @@ body {
 
     .react-flow__node {
       background: #d1d1d1;
-      border: 1px solid black;
+      color: #171717;
+      border: 1px solid #555;
       padding: 5px;
       border-radius: 8px;
       width: 300px;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .pr-filter {
+      background: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      padding: 12px;
+      border: 1px solid var(--bs-border-color);
+      border-radius: 8px;
+      width: min(440px, calc(100vw - 40px));
+      font-size: 13px;
+
+      label { display: block; font-weight: 700; margin-bottom: 6px; }
+      small { display: block; margin: 6px 0; color: var(--bs-secondary-color); }
+      .pr-filter-input { display: flex; gap: 6px; }
+      input { flex: 1; min-width: 0; padding: 7px; }
+      input, button {
+        color: var(--bs-body-color);
+        background: var(--bs-tertiary-bg);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 4px;
+      }
+      input::placeholder { color: var(--bs-secondary-color); }
+      button { cursor: pointer; }
+      button:disabled { opacity: 0.5; cursor: default; }
+    }
+
+    @media (max-width: 800px) {
+      .react-flow__panel.tree-actions { top: auto; bottom: 8px; }
     }
 
     .tree-actions {
@@ -38,8 +73,9 @@ body {
     }
 
     .tree-action-btn {
-      border: 1px solid #eee;
-      background: #e8e8e8;
+      border: 1px solid var(--bs-border-color);
+      background: var(--bs-tertiary-bg);
+      color: var(--bs-body-color);
       padding: 10px 20px;
       border-radius: 5px;
       font-weight: 700;

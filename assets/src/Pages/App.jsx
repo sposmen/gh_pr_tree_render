@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import { Layout } from "./Layout";
+import { ThemeProvider } from '../Theme';
 import { TreeLayout } from "./TreeLayout";
 import ErrorPage from "./Error";
 import Home from "./Home";
@@ -40,4 +41,4 @@ const App = () => {
 
 const root = createRoot(document.getElementById('root'));
 
-root.render(<App />);
+root.render(<ThemeProvider><App /></ThemeProvider>);

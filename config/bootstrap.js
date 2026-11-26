@@ -9,7 +9,13 @@
  * https://sailsjs.com/config/bootstrap
  */
 
+const initializeSqlite = require('../lib/initialize-sqlite');
+
 module.exports.bootstrap = async function() {
+  const datastore = sails.getDatastore();
+  if (datastore.config.adapter === 'sails-sqlite') {
+    initializeSqlite(datastore.manager);
+  }
 
   // By convention, this is a good place to set up fake data during development.
   //

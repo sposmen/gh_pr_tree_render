@@ -1,12 +1,12 @@
 // https://reactflow.dev/examples/layout/dagre
 import dagre from '@dagrejs/dagre';
-const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
-dagreGraph.setGraph({ rankdir: 'TB' });
 
 const nodeWidth = 300;
-const nodeHeight = 35;
+const nodeHeight = 60;
 
 export default (nodes, edges) =>{
+  const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+  dagreGraph.setGraph({ rankdir: 'TB' });
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useReactFlow } from '@xyflow/react';
+import { getSmoothStepPath, Position, useReactFlow } from '@xyflow/react';
 import { Download } from 'react-bootstrap-icons';
 import { useParams } from 'react-router-dom';
 
@@ -41,11 +41,12 @@ const wrapText = (text, maxCharsPerLine = 38, maxLines = 2) => {
 };
 
 function DownloadButton({ fileNameBase }) {
-  const { getNodes } = useReactFlow();
+  const { getNodes, getEdges } = useReactFlow();
   const { owner, repo } = useParams();
 
   const onClick = () => {
-    const allNodes = getNodes();
+    const allNodes = getNodes().filter(node => !node.hidden);
+    if (!allNodes.length) return;
     const origin = window.location.origin;
 
     // Compute tight bounds from measured node dimensions
@@ -66,34 +67,22 @@ function DownloadButton({ fileNameBase }) {
     const tx = MARGIN - minX;
     const ty = MARGIN - minY;
 
-    // --- Edge extraction ---
-    // In ReactFlow v12, .react-flow__edges IS the <svg> element (not a container).
-    // Use a broad selector that doesn't care about nesting.
-    const edgesRoot = document.querySelector('.react-flow__edges');
-    const defsEl = edgesRoot?.querySelector('defs');
-    const defsMarkup = defsEl ? defsEl.innerHTML : '';
-
-    const edgePathEls = document.querySelectorAll('.react-flow__edge-path');
-    const pathsOut = [];
-    edgePathEls.forEach(el => {
-      const d = el.getAttribute('d');
-      if (!d) return;
-      const cs = window.getComputedStyle(el);
-      const stroke = (cs.stroke && cs.stroke !== 'none') ? cs.stroke : '#b1b1b7';
-      const strokeWidth = cs.strokeWidth || '1';
-      const dash = (cs.strokeDasharray && cs.strokeDasharray !== 'none') ? cs.strokeDasharray : '';
-      const markerEnd = el.getAttribute('marker-end') || '';
-      const attrs = [
-        `d="${d}"`,
-        `stroke="${stroke}"`,
-        `stroke-width="${strokeWidth}"`,
-        'fill="none"',
-        dash ? `stroke-dasharray="${dash}"` : '',
-        markerEnd ? `marker-end="${markerEnd}"` : '',
-      ].filter(Boolean).join(' ');
-      pathsOut.push(`<path ${attrs}/>`);
-    });
-    const edgePathsMarkup = pathsOut.join('\n    ');
+    // Generate edges in graph coordinates, independently of viewport/DOM culling.
+    const nodesById = new Map(allNodes.map(node => [node.id, node]));
+    const edgePathsMarkup = getEdges().filter(edge => !edge.hidden).map(edge => {
+      const source = nodesById.get(edge.source);
+      const target = nodesById.get(edge.target);
+      if (!source || !target) return '';
+      const [d] = getSmoothStepPath({
+        sourceX: source.position.x + (source.measured?.width ?? 300) / 2,
+        sourceY: source.position.y + (source.measured?.height ?? 60),
+        targetX: target.position.x + (target.measured?.width ?? 300) / 2,
+        targetY: target.position.y,
+        sourcePosition: Position.Bottom,
+        targetPosition: Position.Top,
+      });
+      return `<path d="${d}" stroke="#b1b1b7" stroke-width="1" fill="none"/>`;
+    }).join('\n    ');
 
     // --- Node rendering ---
     const nodesMarkup = allNodes.map(node => {
@@ -151,7 +140,7 @@ function DownloadButton({ fileNameBase }) {
 
       const iconsLayer = isPRNode ? `\n    ${searchAnchor}\n    ${extAnchor}` : '';
 
-      return `<g transform="translate(${node.position.x}, ${node.position.y})">
+      return `<g opacity="${node.style?.opacity ?? 1}" transform="translate(${node.position.x}, ${node.position.y})">
     <rect width="${w}" height="${h}" rx="8" ry="8" fill="${bg}" stroke="black" stroke-width="1"/>
     ${titleText}${authorText ? `\n    ${authorText}` : ''}${iconsLayer}
   </g>`;
@@ -159,7 +148,6 @@ function DownloadButton({ fileNameBase }) {
 
     // --- Compose final SVG ---
     const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" width="${imageWidth}" height="${imageHeight}" viewBox="0 0 ${imageWidth} ${imageHeight}">
-  <defs>${defsMarkup}</defs>
   <rect width="${imageWidth}" height="${imageHeight}" fill="#ffffff"/>
   <g transform="translate(${tx}, ${ty})">
     <g class="edges">
